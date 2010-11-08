@@ -9,7 +9,7 @@ def post_saved(instance, **kwargs):
     notify_topic_subscribers(instance)
 
     profile = instance.user.pybb_profile
-    profile.post_count = instance.user.posts.count()
+    profile.post_count = instance.user.pybb_posts.count()
     profile.save()
 
 
