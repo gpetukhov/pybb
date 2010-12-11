@@ -28,7 +28,7 @@ def notify_topic_subscribers(post):
                 subject = u'RE: %s' % topic.name
                 to_email = user.email
                 hostname = Site.objects.get_current().domain
-                delete_url = reverse('pybb_delete_subscription', args=[post.topic.id])
+                delete_url = reverse('pybb_subscription_delete', args=[post.topic.id])
 
                 content = TOPIC_SUBSCRIPTION_TEXT_TEMPLATE() % {
                     'username': post.user.username,

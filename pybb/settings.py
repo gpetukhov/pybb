@@ -1,10 +1,5 @@
 from os.path import join
 
-
-PYBB_HEADER = 'PyBB'
-PYBB_TAGLINE = 'Yet another PyBB forum'
-PYBB_NOTICE = ''
-
 PYBB_TOPIC_PAGE_SIZE = 10
 PYBB_FORUM_PAGE_SIZE = 20
 PYBB_USERS_PAGE_SIZE = 20
