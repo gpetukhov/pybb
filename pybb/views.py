@@ -417,9 +417,8 @@ def show_attachment(request, hash):
 @ajax
 def post_ajax_preview(request):
     content = request.POST.get('content')
-    markup = request.POST.get('markup')
+    markup = request.user.pybb_profile.markup
 
-    print 'markup', markup
     if not markup in dict(MARKUP_CHOICES).keys():
         return {'error': 'Invalid markup'}
 
