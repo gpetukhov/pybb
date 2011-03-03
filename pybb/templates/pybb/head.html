@@ -1,10 +1,9 @@
-{% load pybb_tags %}
-{% load i18n %}
+{% load pybb_tags i18n %}
 
 <div class="head_box">
     <div class="head main-box">
         <div class="logo">
-            <a href="{% url pybb_index %}">{{ PYBB_HEADER }}</a>
+            <a href="{% url pybb_index %}">PyBB</a>
         </div>
         <ul class="navigation">
             <li><a href="#" onclick="$('.search_box').toggle(); return false;">{% trans "Search" %}</a></li>
@@ -23,7 +22,7 @@
             <li><a href="{% url pybb_feed "posts" %}" ><img src="{{ PYBB_MEDIA_URL }}img/feed-icon-small.png" alt="feed" /></a></li>
         </ul>
         <div class="clear"></div>
-        <h2 class="description">{{ PYBB_TAGLINE|safe }}</h2>
+        <h2 class="description">Yet another pybb forum</h2>
         <div class="clear"></div>
     </div>
 </div>
@@ -49,13 +48,3 @@
         </form>
     </div>
 </div>
-
-{% if PYBB_NOTICE %}
-<div class="notice_box">
-    <div class="notice main-box">
-        <div class="inner">
-            {{ PYBB_NOTICE|safe }}
-        </div>
-    </div>
-</div>
-{% endif %}

@@ -1,3 +1,9 @@
+"""
+Forum models:
+
+Category, Forum, Topic, Post, Profile, Attachment, ReadTracking
+
+"""
 from datetime import datetime
 from markdown import Markdown
 import os.path
@@ -14,9 +20,10 @@ from django.utils.html import strip_tags
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
-from pybb.shortcuts import JSONField
 from pybb.markups import mypostmarkup
 from pybb.util import urlize, unescape
+
+from common.fields import JSONField
 
 
 TZ_CHOICES = [(float(x[0]), x[1]) for x in (
@@ -62,7 +69,6 @@ class Category(models.Model):
         return Post.objects.filter(topic__forum__category=self).select_related()
 
 
-import logging
 class Forum(models.Model):
     category = models.ForeignKey(Category, related_name='forums', verbose_name=_('Category'))
     name = models.CharField(_('Name'), max_length=80)

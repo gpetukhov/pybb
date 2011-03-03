@@ -8,24 +8,35 @@
     <script type="text/javascript" src="{{ PYBB_MEDIA_URL }}/js/pybbjs.js"></script>
 {% endblock %}
 
+{% block pybb_crumbs %}
+    <a href="{% url pybb_index %}">{% trans "Root" %}</a> / <a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category }}</a> / <a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum }}</a></div>
+{% endblock %}
 
 {% block pybb_content %}
-<div class="crumbs">
-    <a href="{% url pybb_index %}">{% trans "Root" %}</a> / {% pybb_link topic.forum.category %} / {% pybb_link topic.forum %} / <strong>{% pybb_link topic %}</strong>
+<div class="topic-details">
+    <h2>
+        <a href="{{ topic.get_absolute_url }}">{{ topic }}</a>
+    </h2>
 </div>
 
 {% with _('Posts') as label %}
 {% include "pybb/pagination.html" %}
 {% endwith %}
 
-<ul class="posts">
-    {% if first_post %}{% ifnotequal first_post posts.0 %}
-        {% with first_post as post %}
-        <li class="first_post">{% include "pybb/post_template.html" %}</li>
-        {% endwith %}
-    {% endifnotequal %}{% endif %}
+
+<ul class="post-list">
+    {% if first_post and first_post != posts.0 %}
+    {% with first_post as post %}
+    <li class="post-details first_post">
+        {% include "pybb/post_template.html" %}
+    </li>
+    {% endwith %}
+    {% endif %}
+
     {% for post in posts %}
-        <li>{% include "pybb/post_template.html" %}</li>
+        <li class="post-details">
+        {% include "pybb/post_template.html" %}
+    </li>
     {% endfor %}
 </ul>
 

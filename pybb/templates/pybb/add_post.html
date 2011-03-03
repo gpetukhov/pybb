@@ -12,9 +12,9 @@
 {% else %}
     <div class="crumbs">
     {% if forum %}
-        <a href="{% url pybb_index %}">{% trans "Root" %}</a> / {% pybb_link forum.category %} / {% pybb_link forum %}
+        <a href="{% url pybb_index %}">{% trans "Root" %}</a> / <a href="{{ forum.category.get_absolute_url }}">{{ forum.category }}</a> / <a href="{{ forum.get_absolute_url }}">{{ forum }}</a>
     {% else %}
-        <a href="{% url pybb_index %}">{% trans "Root" %}</a> / {% pybb_link topic.forum.category %} / {% pybb_link topic.forum %} / {% pybb_link topic %}
+        <a href="{% url pybb_index %}">{% trans "Root" %}</a> / <a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category }}</a> / <a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum }}</a> / <a href="{{ topic.get_absolute_url }}">{{ topic }}</a>
     {% endif %}
     </div>
 

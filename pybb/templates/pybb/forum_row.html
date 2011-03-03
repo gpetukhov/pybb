@@ -1,7 +1,7 @@
 {% load pybb_tags %}
 
 {% if forum|pybb_forum_unread:user %}<span class="unread"></span>{% endif %}
-<span class="title">{% pybb_link forum %}</span>
+<span class="name"><a href="{{ forum.get_absolute_url }}">{{ forum }}</a></span>
 <span class="post_count">{{ forum.post_count }}</span>
 {% if forum.updated %}
 <span class="updated">{% pybb_time forum.updated %}</span>

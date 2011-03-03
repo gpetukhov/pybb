@@ -4,7 +4,7 @@
 
 {% block pybb_content %}
 <div class="crumbs">
-<a href="{% url pybb_index %}">{% trans "Root" %}</a> / {% pybb_link post.topic.forum.category %} / {% pybb_link post.topic.forum %} / {% pybb_link post.topic %}
+<a href="{% url pybb_index %}">{% trans "Root" %}</a> / <a href="{{ post.topic.forum.category.get_absolute_url }}">{{ post.topic.forum.category }}</a> / <a href="{{ post.topic.forum.get_absolute_url }}">{{ post.topic.forum }}</a> / <a href="{{ post.topic.get_absolute_url }}">{{ post.topic }}</a>
 </div>
 
 <h1>{% trans "Editing the post" %}</h1>

@@ -13,7 +13,6 @@ Integrating PyBB into existing django project
 * Edit settings.py
   * Add ``pybb`` to ``INSTALLED_APPS``
   * Add ``from pybb.settings import *`` line
-  * Add ``pybb.context_processors.pybb`` to ``TEMPLATE_CONTEXT_PROCESSORS``
   * Add ``pybb.middleware.PybbMiddleware`` to ``MIDDLEWARE_CLASSES``
 * Add ``url('', include('pybb.urls'))`` to ``urls.py`` file
 * Run command ``manage.py migrate`` if you installed `south <http://south.aeracode.org>`_ (recommended) or ``./manage.py syncdb`` (if south is not installed)
