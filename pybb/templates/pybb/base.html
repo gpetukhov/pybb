@@ -12,8 +12,8 @@
     {% block pybb_extra_css %}{% endblock %}
 
     <!-- Feeds -->
-    <link rel="alternate" type="application/atom+xml" href="{% url pybb_feed "posts" %}" title="{% trans "Latest posts on forum" %}" />
-    <link rel="alternate" type="application/atom+xml" href="{% url pybb_feed "topics" %}" title="{% trans "Latest topics on forum" %}" />
+    <link rel="alternate" type="application/atom+xml" href="{% url pybb_feed_post %}" title="{% trans "Latest posts on forum" %}" />
+    <link rel="alternate" type="application/atom+xml" href="{% url pybb_feed_topic %}" title="{% trans "Latest topics on forum" %}" />
 
     <!-- Javascript -->
     <script type="text/javascript" src="{{ PYBB_MEDIA_URL }}js/jquery-1.4.3.js"></script>
