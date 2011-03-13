@@ -19,8 +19,10 @@ from django.core.urlresolvers import reverse
 from django.db import connection
 from django.utils.translation import ugettext_lazy as _
 
+from common.decorators import render_to, ajax
+from common.orm import load_related
+from common.pagination import paginate
 
-from pybb.shortcuts import load_related
 from pybb.markups import mypostmarkup
 from pybb.util import quote_text, set_language, urlize
 from pybb.models import Category, Forum, Topic, Post, Profile, \
@@ -30,39 +32,35 @@ from pybb.forms import  AddPostForm, EditPostForm, EditHeadPostForm, \
 from pybb.read_tracking import update_read_tracking
 from pybb.templatetags.pybb_tags import pybb_editable_by, pybb_moderated_by
 
-from common.decorators import render_to, ajax
-from common.pagination import paginate
 
 
 def load_last_post(objects):
-    """Load post for forums or topics, make __in query"""
-    pks = [object.last_post_id for object in objects]
-    posts = dict((post.pk, post) for post in Post.objects.filter(pk__in=pks))
-    for object in objects:
-        object.last_post = posts.get(object.last_post_id)
+    """
+    Get list of topics/forums and find the recent post in
+    each topic/forum. Also extract author of the post.
+    """
 
-
-def load_users_for_last_post(objects):
-    """Load user for last post of forums or topics, make __in query"""
-    pks = set(obj.last_post.user_id for obj in objects if obj.last_post)
-    users = dict((user.pk, user) for user in User.objects.filter(pk__in=pks))
-    for object in objects:
-        if object.last_post:
-            object.last_post.user = users.get(object.last_post.user_id)
+    pk_list = [x.last_post_id for x in objects]
+    qs = Post.objects.filter(pk__in=pk_list).select_related('user')
+    posts = dict((x.pk, x) for x in qs)
+    for obj in objects:
+        obj.last_post = posts.get(obj.last_post_id)
 
 
 @render_to('pybb/index.html')
 def index(request):
-    cats = Category.objects.all()
-    cats = dict((cat.pk, {'cat': cat, 'forums': []}) for cat in cats)
+    """
+    Display list of categories and forums in each category.
+    """
+
+    cats = list(Category.objects.all())
+    cat_map = dict((x.pk, x) for x in cats)
+    for cat in cats:
+        cat.cached_forums = []
     forums = list(Forum.objects.all())
     load_last_post(forums)
-    load_users_for_last_post(forums)
     for forum in forums:
-        forum.category = cats[forum.category_id]['cat']
-        cats[forum.category_id]['forums'].append(forum)
-    cats = sorted(cats.values(), key=lambda x: x['cat'].position)
-
+        cat_map[forum.category_id].cached_forums.append(forum)
     return {'cats': cats,
             }
 
@@ -70,6 +68,9 @@ def index(request):
 @render_to('pybb/category_details.html')
 def category_details(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
+    forums = category.forums.all()
+    load_last_post(forums)
+    category.cached_forums = forums
 
     return {'category': category,
             }
@@ -79,9 +80,8 @@ def category_details(request, category_id):
 def forum_details(request, forum_id):
     forum = get_object_or_404(Forum, pk=forum_id)
     topics = forum.topics.order_by('-sticky', '-updated').select_related()
-    load_last_post(topics)
-    load_users_for_last_post(topics)
     page = paginate(topics, request, settings.PYBB_FORUM_PAGE_SIZE)
+    load_last_post(page.object_list)
 
     return {'forum': forum,
             'page': page,
@@ -115,10 +115,7 @@ def topic_details(request, topic_id):
 
     posts = topic.posts.all()
 
-    # TODO: Here could be gotcha
-    # If topic.post_count is broken then strange effect could be possible!
-    page = paginate(posts, request, settings.PYBB_TOPIC_PAGE_SIZE,
-                               total_count=topic.post_count)
+    page = paginate(posts, request, settings.PYBB_TOPIC_PAGE_SIZE)
 
     users = User.objects.filter(pk__in=
         set(x.user_id for x in page.object_list)).select_related("pybb_profile")
@@ -224,7 +221,7 @@ def profile_edit(request):
     if form.is_valid():
         profile = form.save()
         set_language(request, profile.language)
-        return redirect('pybb_edit_profile')
+        return redirect('pybb_profile_edit')
 
     return {'form': form,
             'profile': request.user.pybb_profile,
@@ -408,7 +405,7 @@ def subscription_delete(request, topic_id):
 def subscription_add(request, topic_id):
     topic = get_object_or_404(Topic, pk=topic_id)
     topic.subscribers.add(request.user)
-    return HttpResponseRedirect(reverse('pybb_topic_details', args=[topic.id]))
+    return redirect('pybb_topic_details', topic.id)
 
 
 @login_required
@@ -423,9 +420,8 @@ def attachment_details(request, hash):
 @ajax
 def post_ajax_preview(request):
     content = request.POST.get('content')
-    markup = request.POST.get('markup')
+    markup = request.user.pybb_profile.markup
 
-    print 'markup', markup
     if not markup in dict(MARKUP_CHOICES).keys():
         return {'error': 'Invalid markup'}
 

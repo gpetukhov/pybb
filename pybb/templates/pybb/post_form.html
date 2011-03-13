@@ -1,19 +1,17 @@
 {% load i18n pybb_tags %}
 
-<form class="post-form" action="{% if forum %}{% url pybb_add_topic forum.pk %}{% else %}{% url pybb_add_post topic.pk %}{% endif %}" method="post" enctype="multipart/form-data">
+<h2>{% if forum %}{% trans "New topic" %}{% else %}{% trans "New reply" %}{% endif %}</h2>
+
+<form class="post-form" action="{% if forum %}{% url pybb_topic_add forum.pk %}{% else %}{% url pybb_post_add topic.pk %}{% endif %}" method="post" enctype="multipart/form-data">
     {% pybb_csrf %}
     <div class="preview-box" style="display: none">
-        <div class="header">{% trans "Preview" %}</div>
         <div class="content"></div>
     </div>
-    <fieldset>
-        <legend>{% if forum %}{% trans "New topic" %}{% else %}{% trans "New reply" %}{% endif %}</legend>
-        {{ form.as_p }}
-        <p class="submit">
-            <input type="submit" value="{% trans 'Submit' %}" />
-            <input class="preview-button" type="button" value="{% trans 'Preview' %}" />
-        </p>
-    </fieldset>
+    {{ form.as_p }}
+    <p class="submit">
+        <input type="submit" value="{% trans 'Submit' %}" />
+        <input class="preview-button" type="button" value="{% trans 'Preview' %}" />
+    </p>
 </form>
 
 <script type="text/javascript">
@@ -21,7 +19,7 @@ $(function() {
     $('.post-form .preview-button').click(function() {
         var raw_content = $.trim($('.post-form #id_body').val());
 
-        args = {'content': raw_content, 'markup': '{{ PYBB_MARKUP }}'}
+        args = {'content': raw_content}
         $.post('{% url pybb_post_ajax_preview %}', args, function(data) {
             if (data.error) {
                 alert(data.error);

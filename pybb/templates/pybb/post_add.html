@@ -1,32 +1,29 @@
 {% extends 'pybb/base.html' %}
-{% load pybb_tags %}
-{% load i18n %}
+{% load pybb_tags i18n %}
 
 {% block pybb_head_extra %}
     <script type="text/javascript" src="{{ PYBB_MEDIA_URL }}js/pybbjs.js"></script>
-    {% include "pybb/markitup_resources.html" %}
-    <script type="text/javascript">
-    $(function() {
-        $("textarea").markItUp(mySettings);
-    });
-    </script>
+{% endblock %}
+
+{% block pybb_crumbs %}
+<a href="{% url website_index %}">Начало</a> &raquo;
+<a href="{% url pybb_index %}">Форум</a> &raquo;
+{% if forum %}
+    <a href="{{ forum.category.get_absolute_url }}">{{ forum.category }}</a> &raquo;
+    <a href="{{ forum.get_absolute_url }}">{{ forum }}</a>
+{% else %}
+    <a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category }}</a> &raquo;
+    <a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum }}</a> &raquo;
+    <a href="{{ topic.get_absolute_url }}">{{ topic }}</a>
+{% endif %}
 {% endblock %}
 
 {% block pybb_content %}
-{% if user.pybb_profile.is_banned %}
-    {% trans 'You banned' %}
-{% else %}
-    <div class="crumbs">
-    {% if forum %}
-        <a href="{% url pybb_index %}">{% trans "Root" %}</a> / {% pybb_link forum.category %} / {% pybb_link forum %}
+<div class="post-form-page">
+    {% if user.pybb_profile.is_banned %}
+        {% trans 'You banned' %}
     {% else %}
-        <a href="{% url pybb_index %}">{% trans "Root" %}</a> / {% pybb_link topic.forum.category %} / {% pybb_link topic.forum %} / {% pybb_link topic %}
+        {% include "pybb/post_form.html" %}
     {% endif %}
-    </div>
-
-    <h1>{% if forum %}{% trans "New topic" %}{% else %}{% trans "New reply" %}{% endif %}</h1>
-
-    {% include "pybb/add_post_form.html" %}
-{% endif %}
-
+</div>
 {% endblock %}

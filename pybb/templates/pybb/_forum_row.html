@@ -1,0 +1,14 @@
+{% load pybb_tags %}
+
+<tr class="forum-item">
+    <td class="title">
+        {% if forum|pybb_forum_unread:user %}<span class="unread"></span>{% endif %}
+        <span class="name"><a href="{{ forum.get_absolute_url }}">{{ forum }}</a></span>
+        <div class="description">{{ forum.description|safe }}</div>
+    </td>
+    <td class="post-count">{{ forum.post_count }}</td>
+    <td class="recent-info">
+    {% if forum.updated %}{% pybb_time forum.updated %}{% endif %}
+    </td>
+</tr>
+</tr>

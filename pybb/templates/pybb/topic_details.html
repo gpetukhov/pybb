@@ -6,32 +6,40 @@
 
 {% block pybb_head_extra %}
     <script type="text/javascript" src="{{ PYBB_MEDIA_URL }}/js/pybbjs.js"></script>
-    {% include "pybb/markitup_resources.html" %}
-    <script type="text/javascript">
-    $(function() {
-        $("textarea").markItUp(mySettings);
-    });
-    </script>
 {% endblock %}
 
+{% block pybb_crumbs %}
+<a href="{% url website_index %}">Начало</a> &raquo;
+<a href="{% url pybb_index %}">Форум</a> &raquo;
+<a href="{{ topic.forum.category.get_absolute_url }}">{{ topic.forum.category }}</a> &raquo;
+<a href="{{ topic.forum.get_absolute_url }}">{{ topic.forum }}</a>
+{% endblock %}
 
 {% block pybb_content %}
-<div class="crumbs">
-    <a href="{% url pybb_index %}">{% trans "Root" %}</a> / {% pybb_link topic.forum.category %} / {% pybb_link topic.forum %} / <strong>{% pybb_link topic %}</strong>
+<div class="topic-details">
+    <h2>
+        <a href="{{ topic.get_absolute_url }}">{{ topic }}</a>
+    </h2>
 </div>
 
 {% with _('Posts') as label %}
 {% include "pybb/pagination.html" %}
 {% endwith %}
 
-<ul class="posts">
-    {% if first_post %}{% ifnotequal first_post posts.0 %}
-        {% with first_post as post %}
-        <li class="first_post">{% include "pybb/post_template.html" %}</li>
-        {% endwith %}
-    {% endifnotequal %}{% endif %}
+
+<ul class="post-list">
+    {% if first_post and first_post != posts.0 %}
+    {% with first_post as post %}
+    <li class="first_post">
+        {% include "pybb/_post_row.html" %}
+    </li>
+    {% endwith %}
+    {% endif %}
+
     {% for post in posts %}
-        <li>{% include "pybb/post_template.html" %}</li>
+    <li class="">
+        {% include "pybb/_post_row.html" %}
+    </li>
     {% endfor %}
 </ul>
 
@@ -40,27 +48,27 @@
 {% endwith %}
 
 {% if user.is_authenticated %}
-<div class="controls">
+<div class="topic-control-bar">
 {% if moderator %}
     {% if topic.sticky %}
-    <a href="{% url pybb_unstick_topic topic.id %}">{% trans "Unstick topic" %}</a> /
+    <a href="{% url pybb_topic_unstick topic.id %}">{% trans "Unstick topic" %}</a> /
     {% else %}
-    <a href="{% url pybb_stick_topic topic.id %}">{% trans "Stick topic" %}</a> /
+    <a href="{% url pybb_topic_stick topic.id %}">{% trans "Stick topic" %}</a> /
     {% endif %}
 
     {% if topic.closed %}
-    <a href="{% url pybb_open_topic topic.id %}">{% trans "Open topic" %}</a> /
+    <a href="{% url pybb_topic_open topic.id %}">{% trans "Open topic" %}</a> /
     {% else %}
-    <a href="{% url pybb_close_topic topic.id %}">{% trans "Close topic" %}</a> /
+    <a href="{% url pybb_topic_close topic.id %}">{% trans "Close topic" %}</a> /
     {% endif %}
 
-    <a href="{% url pybb_merge_topics %}?topic={{ topic.id }}">{% trans 'Merge topics' %}</a> /
+    <a href="{% url pybb_topic_merge %}?topic={{ topic.id }}">{% trans 'Merge topics' %}</a> /
 {% endif %}
 
     {% if subscribed %}
-    <a href="{% url pybb_delete_subscription topic.id %}?from_topic">{% trans "Unsubscribe" %}</a>
+    <a href="{% url pybb_subscription_delete topic.id %}?from_topic">{% trans "Unsubscribe" %}</a>
     {% else %}
-    <a href="{% url pybb_add_subscription topic.id %}">{% trans "Subscribe" %}</a>
+    <a href="{% url pybb_subscription_add topic.id %}">{% trans "Subscribe" %}</a>
     {% endif %}
 </div>
 {% endif %}
@@ -68,7 +76,7 @@
 {% if user.is_authenticated %}
  {% if not user.pybb_profile.is_banned %}
   {% if not topic.closed %}
-   {% include "pybb/add_post_form.html" %}
+   {% include "pybb/post_form.html" %}
   {% endif %}
  {% endif %}
 {% endif %}

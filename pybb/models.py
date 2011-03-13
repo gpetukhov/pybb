@@ -1,3 +1,9 @@
+"""
+Forum models:
+
+Category, Forum, Topic, Post, Profile, Attachment, ReadTracking
+
+"""
 from datetime import datetime
 from markdown import Markdown
 import os.path
@@ -39,6 +45,7 @@ MARKUP_CHOICES = (
 class Category(models.Model):
     name = models.CharField(_('Name'), max_length=80)
     position = models.IntegerField(_('Position'), blank=True, default=0)
+    slug = models.CharField(max_length=30, unique=True, blank=True, null=True)
 
     class Meta:
         ordering = ['position']
@@ -73,6 +80,7 @@ class Forum(models.Model):
     post_count = models.IntegerField(_('Post count'), blank=True, default=0)
     topic_count = models.IntegerField(_('Topic count'), blank=True, default=0)
     last_post = models.ForeignKey("Post", related_name='last_post_in_forum', verbose_name=_(u"last post"), blank=True, null=True)
+    slug = models.CharField(max_length=30, unique=True, blank=True, null=True)
 
     class Meta:
         ordering = ['position']

@@ -1,14 +1,14 @@
 {% extends 'pybb/base.html' %}
-{% load pybb_tags i18n %}
+
+{% block pybb_title %}Форумы{% endblock %}
+
+{% block pybb_crumbs %}
+<a href="{% url website_index %}">Начало</a> &raquo;
+<a href="{% url pybb_index %}">Форум</a>
+{% endblock %}
 
 {% block pybb_content %}
-{% for cat in cats %}
-<h2><a href="{{ cat.cat.get_absolute_url }}">{{ cat.cat }}</a></h2>
-<table>
-{% for forum in cat.forums %}
-    {% include 'pybb/forum_row.html' %}
-{% endfor %}
-</table>
-{% endfor %}
+<ul class="category-list">
+    {% for category in cats %}{% include "pybb/_category_row.html" %}{% endfor %}
 </ul>
 {% endblock %}

@@ -1,9 +1,36 @@
-{% extends "base.html" %}
+{% load i18n %}
+{% load pybb_tags %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+<head>
+    <title>{% block pybb_title %}Yet another pybb forum{% endblock %}</title>
 
-{% block title %}
-    {% block pybb_title %}{% endblock %}
-{% endblock %}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-{% block content %}
-    {% block pybb_content %}{% endblock %}
-{% endblock %}
+    <!-- CSS -->
+    <link href="{{ PYBB_MEDIA_URL }}css/style.css" type="text/css" rel="stylesheet" />
+    {% block pybb_extra_css %}{% endblock %}
+
+    <!-- Feeds -->
+    <link rel="alternate" type="application/atom+xml" href="{% url pybb_feed "posts" %}" title="{% trans "Latest posts on forum" %}" />
+    <link rel="alternate" type="application/atom+xml" href="{% url pybb_feed "topics" %}" title="{% trans "Latest topics on forum" %}" />
+
+    <!-- Javascript -->
+    <script type="text/javascript" src="{{ PYBB_MEDIA_URL }}js/jquery-1.4.3.js"></script>
+
+    {% block pybb_extra_js %}{% endblock %}
+
+    {% block pybb_head_extra %}{% endblock %}
+</head>
+<body>
+    {% include 'pybb/head.html' %}
+
+    <div class="content_box">
+        <div class="content main-box">
+        {% block pybb_content %}{% endblock %}
+        </div>
+    </div>
+
+    {% include 'pybb/footer.html' %}
+</body>
+</html>

@@ -2,15 +2,6 @@
 {% load pybb_tags %}
 {% load i18n %}
 
-{% block pybb_head_extra %}
-    {% include "pybb/markitup_resources.html" %}
-    <script type="text/javascript">
-    $(function() {
-        $("#id_signature").markItUp(mySettings);
-    });
-    </script>
-{% endblock %}
-
 {% block pybb_content %}
 <h1>{% trans "Profile editing" %}</h1>
 <img src="{{ profile.user|pybb_avatar_url }}" />
@@ -27,7 +18,7 @@
 <ul>
 {% for sub in user.subscriptions.all %}
 <li>
-{% pybb_link sub %}
+<a href="{{ sub.get_absolute_url }}">{{ sub }}</a>
 &mdash;
 <strong>
     <a href="{% url pybb_delete_subscription sub.id %}">{% trans "delete" %}</a>

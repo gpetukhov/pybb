@@ -42,7 +42,7 @@ def pybb_csrf(parser, token):
 
 @register.filter
 def pybb_profile_link(user):
-    url = reverse('pybb_user', args=[user.username])
+    url = reverse('pybb_user_details', args=[user.username])
     return mark_safe(u'<a href="%s">%s</a>' % (url, user.username))
 
 
