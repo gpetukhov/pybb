@@ -90,6 +90,8 @@ class AddPostForm(forms.ModelForm):
             dir = os.path.join(settings.MEDIA_ROOT, settings.PYBB_ATTACHMENT_UPLOAD_TO)
             fname = '%d.0' % post.id
             path = os.path.join(dir, fname)
+            if not os.path.exists(dir):
+                os.makedirs(dir)
             file(path, 'w').write(memfile.read())
             obj.path = fname
             obj.save()
