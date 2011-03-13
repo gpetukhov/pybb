@@ -13,6 +13,7 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=80)),
             ('position', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
+            ('slug', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=30, blank=True)),
         ))
         db.send_create_signal('pybb', ['Category'])
 
@@ -27,6 +28,7 @@ class Migration(SchemaMigration):
             ('post_count', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
             ('topic_count', self.gf('django.db.models.fields.IntegerField')(default=0, blank=True)),
             ('last_post', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='last_post_in_forum', null=True, to=orm['pybb.Post'])),
+            ('slug', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=30, blank=True)),
         ))
         db.send_create_signal('pybb', ['Forum'])
 
@@ -196,7 +198,8 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['position']", 'object_name': 'Category'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'})
+            'position': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
+            'slug': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '30', 'blank': 'True'})
         },
         'pybb.forum': {
             'Meta': {'ordering': "['position']", 'object_name': 'Forum'},
@@ -208,6 +211,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'position': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
             'post_count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
+            'slug': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '30', 'blank': 'True'}),
             'topic_count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
         },
