@@ -33,39 +33,40 @@ from pybb.read_tracking import update_read_tracking
 
 
 def load_last_post(objects):
-    """Load post for forums or topics, make __in query"""
-    pks = [object.last_post_id for object in objects]
-    posts = dict((post.pk, post) for post in Post.objects.filter(pk__in=pks))
-    for object in objects:
-        object.last_post = posts.get(object.last_post_id)
+    """
+    Get list of topics/forums and find the recent post in
+    each topic/forum. Also extract author of the post.
+    """
 
-
-def load_users_for_last_post(objects):
-    """Load user for last post of forums or topics, make __in query"""
-    pks = set(obj.last_post.user_id for obj in objects if obj.last_post)
-    users = dict((user.pk, user) for user in User.objects.filter(pk__in=pks))
-    for object in objects:
-        if object.last_post:
-            object.last_post.user = users.get(object.last_post.user_id)
+    pk_list = [x.last_post_id for x in objects]
+    qs = Post.objects.filter(pk__in=pk_list).select_related('user')
+    posts = dict((x.pk, x) for x in qs)
+    for obj in objects:
+        obj.last_post = posts.get(obj.last_post_id)
 
 
 def index_ctx(request):
-    cats = Category.objects.all()
-    cats = dict((cat.pk, {'cat': cat, 'forums': []}) for cat in cats)
+    """
+    Display list of categories and forums in each category.
+    """
+
+    cats = list(Category.objects.all())
+    cat_map = dict((x.pk, x) for x in cats)
+    for cat in cats:
+        cat.cached_forums = []
     forums = list(Forum.objects.all())
     load_last_post(forums)
-    load_users_for_last_post(forums)
     for forum in forums:
-        forum.category = cats[forum.category_id]['cat']
-        cats[forum.category_id]['forums'].append(forum)
-    cats = sorted(cats.values(), key=lambda x: x['cat'].position)
-
+        cat_map[forum.category_id].cached_forums.append(forum)
     return {'cats': cats,
             }
 
 
 def show_category_ctx(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
+    forums = category.forums.all()
+    load_last_post(forums)
+    category.cached_forums = forums
 
     return {'category': category,
             }
@@ -74,9 +75,8 @@ def show_category_ctx(request, category_id):
 def show_forum_ctx(request, forum_id):
     forum = get_object_or_404(Forum, pk=forum_id)
     topics = forum.topics.order_by('-sticky', '-updated').select_related()
-    load_last_post(topics)
-    load_users_for_last_post(topics)
     page, paginator = paginate(topics, request, settings.PYBB_FORUM_PAGE_SIZE)
+    load_last_post(page.object_list)
 
     return {'forum': forum,
             'page': page,

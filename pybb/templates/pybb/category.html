@@ -1,27 +1,15 @@
 {% extends 'pybb/base.html' %}
-{% load pybb_tags %}
-{% load i18n %}
+{% load pybb_tags i18n %}
 
-{% block pybb_title %}
-{{ category }}
-{% endblock %}
+{% block pybb_title %}{{ category }}{% endblock %}
 
 {% block pybb_crumbs %}
-<a href="{% url pybb_index %}">{% trans "Root" %}</a> /
-<a href="{{ category.get_absolute_url }}">{{ category }}</a>
+<a href="{% url website_index %}">Начало</a> &raquo;
+<a href="{% url pybb_index %}">Форум</a>
 {% endblock %}
 
 {% block pybb_content %}
 <ul class="category-list">
-    <li class="category-details">
-        <h2 class="name">{{ category }}</h2>
-        <ul class="forum-list">
-            {% for forum in category.forums.all %}
-            <li class="forum-details">
-                {% include 'pybb/forum_row.html' %}
-            </li>
-            {% endfor %}
-        </ul>
-    </li>
+    {% include "pybb/_category_row.html" %}
 </ul>
 {% endblock %}

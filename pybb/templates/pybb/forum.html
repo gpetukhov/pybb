@@ -6,8 +6,10 @@
 {{ forum }}
 {% endblock %}
 
-{% block crumbs %}
-<a href="{% url pybb_index %}">{% trans "Root" %}</a> / <a href="{{ forum.category.get_absolute_url }}">{{ forum.category }}</a> / <a href="{{ forum.get_absolute_url }}">{{ forum }}</a>
+{% block pybb_crumbs %}
+<a href="{% url website_index %}">Начало</a> &raquo;
+<a href="{% url pybb_index %}">Форум</a> &raquo;
+<a href="{{ forum.category.get_absolute_url }}">{{ forum.category }}</a>
 {% endblock %}
 
 {% block pybb_content %}
