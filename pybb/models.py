@@ -45,6 +45,7 @@ MARKUP_CHOICES = (
 class Category(models.Model):
     name = models.CharField(_('Name'), max_length=80)
     position = models.IntegerField(_('Position'), blank=True, default=0)
+    slug = models.CharField(max_length=30, unique=True, blank=True, null=True)
 
     class Meta:
         ordering = ['position']
@@ -58,7 +59,7 @@ class Category(models.Model):
         return self.forums.all().count()
 
     def get_absolute_url(self):
-        return reverse('pybb_category', args=[self.id])
+        return reverse('pybb_category_details', args=[self.id])
 
     @property
     def topics(self):
@@ -79,6 +80,7 @@ class Forum(models.Model):
     post_count = models.IntegerField(_('Post count'), blank=True, default=0)
     topic_count = models.IntegerField(_('Topic count'), blank=True, default=0)
     last_post = models.ForeignKey("Post", related_name='last_post_in_forum', verbose_name=_(u"last post"), blank=True, null=True)
+    slug = models.CharField(max_length=30, unique=True, blank=True, null=True)
 
     class Meta:
         ordering = ['position']
@@ -94,7 +96,7 @@ class Forum(models.Model):
         self.save()
 
     def get_absolute_url(self):
-        return reverse('pybb_forum', args=[self.id])
+        return reverse('pybb_forum_details', args=[self.id])
 
     @property
     def posts(self):
@@ -138,7 +140,7 @@ class Topic(models.Model):
         return self.posts.order_by('-created').select_related()[0]
 
     def get_absolute_url(self):
-        return reverse('pybb_topic', args=[self.id])
+        return reverse('pybb_topic_details', args=[self.id])
 
     def save(self, *args, **kwargs):
         if self.id is None:
@@ -218,7 +220,7 @@ class Post(RenderableItem):
             self.topic.forum.update_post_count()
 
     def get_absolute_url(self):
-        return reverse('pybb_post', args=[self.id])
+        return reverse('pybb_post_details', args=[self.id])
 
     def delete(self, *args, **kwargs):
         self_id = self.id
@@ -280,7 +282,7 @@ class Profile(models.Model):
         return False
 
     def get_absolute_url(self):
-        return reverse('pybb_user', args=[self.user.username])
+        return reverse('pybb_user_details', args=[self.user.username])
 
 
 class Attachment(models.Model):
@@ -301,7 +303,7 @@ class Attachment(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('pybb_attachment', args=[self.hash])
+        return reverse('pybb_attachment_details', args=[self.hash])
 
     def size_display(self):
         size = self.size

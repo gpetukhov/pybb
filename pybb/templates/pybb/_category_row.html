@@ -1,10 +1,18 @@
-<li class="category-details">
+<li class="category-item">
     <h2 class="name"><a href="{{ category.get_absolute_url }}">{{ category }}</a></h2>
-    <ul class="forum-list">
-        {% for forum in category.cached_forums %}
-        <li class="forum-details">
+    <table class="forum-list">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Ответы</th>
+                <th>Последний ответ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for forum in category.cached_forums %}
             {% include 'pybb/_forum_row.html' %}
-        </li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </tbody>
+        </table>
+    </table>
 </li>

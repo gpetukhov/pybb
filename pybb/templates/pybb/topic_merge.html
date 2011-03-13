@@ -38,7 +38,7 @@
     <ul class="posts">
         {% for post in posts %}
             {{ post.topic.name }}
-            <li>{% include "pybb/post_template.html" %}</li>
+            <li>{% include "pybb/_post_row.html" %}</li>
         {% endfor %}
     </ul>
 
