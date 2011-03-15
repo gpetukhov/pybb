@@ -9,7 +9,7 @@
     <td class="feed"><a href="{% url pybb_feed_forum_byid_topic forum.pk %}"><img src="{{ MEDIA_URL }}img/feed-icon-small.png" /></a></td>
     <td class="post-count">{{ forum.post_count }}</td>
     <td class="recent-info">
-    {% if forum.updated %}{% pybb_time forum.updated %}{% endif %}
+        {% if forum.updated %}<a href="{{ forum.last_post.get_absolute_url }}">{% pybb_time forum.updated %}</a>{% endif %}
     </td>
 </tr>
 </tr>

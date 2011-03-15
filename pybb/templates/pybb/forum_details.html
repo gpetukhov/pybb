@@ -34,7 +34,7 @@
                 <div>{% pybb_topic_mini_pagination topic %}</div>
             </td>
             <td class="post-count">{{ topic.post_count }}</td>
-            <td class="recent-info">{% pybb_time topic.updated %}</td>
+            <td class="recent-info">{% if topic.updated %}<a href="{{ topic.last_post.get_absolute_url }}">{% pybb_time topic.updated %}</a>{% endif %}</td>
         </tr>
         {% endfor %}
     </table>
