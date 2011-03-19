@@ -46,7 +46,7 @@ urlpatterns += patterns('pybb.views',
     url('^post/(\d+)/delete/$', 'post_delete', name='pybb_post_delete'),
 
     # Attachment
-    url('^attachment/(\w+)/$', 'attachment_details', name='attachment_details'),
+    url('^attachment/(\w+)/$', 'attachment_details', name='pybb_attachment_details'),
 
     # Subscription
     url('^subscription/topic/(\d+)/delete/$',
