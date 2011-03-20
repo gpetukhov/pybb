@@ -322,37 +322,12 @@ def pybb_forum_unread(forum, user):
 @register.simple_tag
 def pybb_render_post(post, mode='html'):
     """
-    Process post contents and replace special tags with human readeable messages.
+    Render post's content.
 
     Arguments:
         post - the ``Post`` instance
-        mode - "html" or "text". Control which field to use ``body_html`` or ``body_text``
-
-    Currently following tags are supported:
-    
-        @@@AUTOJOIN-(SECONDS)@@@ - autojoin message
+        mode - "html" or "text": which field to use ``body_html`` or ``body_text``
 
     """
 
-    def render_autojoin_message(match):
-        time_diff = int(match.group(1)) / 60
-
-        if settings.LANGUAGE_CODE.startswith('ru') and pytils_enabled:
-            minutes = pytils.numeral.choose_plural(time_diff,
-                                                   (u'минуту', u'минуты', u'минут'))
-            join_message = u'Добавлено через %s %s' % (time_diff, minutes)
-        else:
-            join_message = ungettext(u"Added after %s minute",
-                                     u"Added after %s minutes",
-                                     time_diff)
-            join_message %= time_diff
-
-        if mode == 'html':
-            return u'<div class="autojoin-message">%s</div>' % join_message
-        else:
-            return join_message
-
-
-    body = getattr(post, 'body_%s' % mode)
-    re_tag = re.compile(r'@@@AUTOJOIN-(\d+)@@@')
-    return re_tag.sub(render_autojoin_message, body)
+    return getattr(post, 'body_%s' % mode)
