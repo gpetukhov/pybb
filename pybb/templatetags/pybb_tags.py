@@ -142,7 +142,7 @@ def pybb_equal_to(obj1, obj2):
     return obj1 == obj2
 
 
-@register.inclusion_tag('pybb/topic_mini_pagination.html')
+@register.inclusion_tag('pybb/_topic_mini_pagination.html')
 def pybb_topic_mini_pagination(topic):
     """
     Display links on topic pages.
