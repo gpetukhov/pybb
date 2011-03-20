@@ -25,7 +25,6 @@ def user_saved(instance, created, **kwargs):
         ReadTracking.objects.create(user=instance)
 
 
-def setup_signals():
-    post_save.connect(post_saved, sender=Post)
-    post_save.connect(topic_saved, sender=Topic)
-    post_save.connect(user_saved, sender=User)
+post_save.connect(post_saved, sender=Post)
+post_save.connect(topic_saved, sender=Topic)
+post_save.connect(user_saved, sender=User)

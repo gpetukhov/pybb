@@ -223,7 +223,7 @@ class Post(RenderableItem):
         return reverse('pybb_post_details', args=[self.id])
 
     def delete(self, *args, **kwargs):
-        self_id = self.id
+        self_id = self.pk
         head_post_id = self.topic.posts.order_by('created')[0].id
         last_posts = list(self.topic.posts.order_by('-created')[:2])
         last_post_id = self.topic.get_last_post().id
@@ -236,11 +236,10 @@ class Post(RenderableItem):
             self.topic.forum.last_post = self.topic.last_post
             self.topic.forum.save()
             super(Post, self).delete(*args, **kwargs)
-            self.topic.forum.last_post = self.topic.forum.get_last_post()
         else:
             super(Post, self).delete(*args, **kwargs)
-            self.topic.update_post_count()
 
+        self.topic.update_post_count()
         self.topic.forum.update_post_count()
 
 
@@ -348,5 +347,4 @@ class ReadTracking(models.Model):
         super(ReadTracking, self).save(*args, **kwargs)
 
 
-from pybb import signals
-signals.setup_signals()
+import pybb.signals
